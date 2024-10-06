@@ -1,29 +1,43 @@
-// src/models/payer.ts
-import { Table, Column, Model, HasMany } from 'sequelize-typescript';
+import { Model, DataTypes, Sequelize } from 'sequelize';
 import { Payment } from './payment';
 
-@Table
 export class Payer extends Model {
-  @Column({
-    type: DataType.UUID,
-    primaryKey: true,
-    defaultValue: DataType.UUIDV4,
-  })
-  id!: string;
+  public id!: string;
+  public payerName!: string;
+  public order!: number;
+  public readonly createdAt!: Date;
+  public readonly updatedAt!: Date;
 
-  @Column({
-    type: DataType.STRING,
-    allowNull: false,
-  })
-  payerName!: string;
+  public payments?: Payment[];
 
-  @Column({
-    type: DataType.INTEGER,
-    allowNull: false,
-  })
-  order!: number;
+  static initModel(sequelize: Sequelize): typeof Payer {
+    Payer.init({
+      id: {
+        type: DataTypes.UUID,
+        primaryKey: true,
+        defaultValue: DataTypes.UUIDV4,
+      },
+      payerName: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      order: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+    }, {
+      sequelize,
+      tableName: 'payers',
+    });
 
-  @HasMany(() => Payment)
-  payments!: Payment[];
+    return Payer;
+  }
+
+  static associateModel(): void {
+    Payer.hasMany(Payment, {
+      sourceKey: 'id',
+      foreignKey: 'payerId',
+      as: 'payments',
+    });
+  }
 }
-

@@ -1,54 +1,53 @@
-// src/models/payment.ts
-import {
-  Table,
-  Column,
-  Model,
-  DataType,
-  ForeignKey,
-  BelongsTo
-} from 'sequelize-typescript';
+import { Model, DataTypes, Sequelize } from 'sequelize';
 import { Payer } from './payer';
 
-@Table({
-  tableName: 'payments',
-  timestamps: false,
-})
 export class Payment extends Model {
-  @Column({
-    type: DataType.UUID,
-    primaryKey: true,
-    defaultValue: DataType.UUIDV4,
-  })
-  id!: string;
+  public id!: string;
+  public payerId!: string;
+  public restaurantName!: string;
+  public paymentAmount!: number;
+  public time!: Date;
 
-  @ForeignKey(() => Payer)
-  @Column({
-    type: DataType.UUID,
-    allowNull: false,
-  })
-  payerId!: string;
+  public payer?: Payer;
 
-  @BelongsTo(() => Payer)
-  payer!: Payer;
+  static initModel(sequelize: Sequelize): typeof Payment {
+    Payment.init({
+      id: {
+        type: DataTypes.UUID,
+        primaryKey: true,
+        defaultValue: DataTypes.UUIDV4,
+      },
+      payerId: {
+        type: DataTypes.UUID,
+        allowNull: false,
+      },
+      restaurantName: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      paymentAmount: {
+        type: DataTypes.FLOAT,
+        allowNull: false,
+      },
+      time: {
+        type: DataTypes.DATE,
+        allowNull: false,
+      },
+    }, {
+      sequelize,
+      tableName: 'payments',
+      timestamps: false,
+    });
 
-  @Column({
-    type: DataType.STRING,
-    allowNull: false,
-  })
-  restaurantName!: string;
+    return Payment;
+  }
 
-  @Column({
-    type: DataType.FLOAT,
-    allowNull: false,
-  })
-  paymentAmount!: number;
-
-  @Column({
-    type: DataType.DATE,
-    allowNull: false,
-  })
-  time!: Date;
+  static associateModel(): void {
+    Payment.belongsTo(Payer, {
+      foreignKey: 'payerId',
+      as: 'payer',
+    });
+  }
 }
-
 
 
