@@ -174,7 +174,7 @@ export default function HomeComponent(): JSX.Element {
 
         <div className="flex justify-center space-x-6 mt-12">
           <a
-            href="/history"
+            href="/payment-history"
             className="inline-flex items-center justify-center bg-gradient-to-r from-blue-500 to-teal-400 text-white px-6 py-3 rounded-full text-lg font-bold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
           >
             <FaHistory className="mr-2" />
@@ -182,7 +182,7 @@ export default function HomeComponent(): JSX.Element {
           </a>
 
           <a
-            href="/payer-management"
+            href="/payers"
             className="inline-flex items-center justify-center bg-gradient-to-r from-pink-500 to-orange-400 text-white px-6 py-3 rounded-full text-lg font-bold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
           >
             <FaUsers className="mr-2" />
