@@ -3,12 +3,12 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { FaTrashAlt, FaUserCircle, FaArrowUp, FaArrowDown } from "react-icons/fa";
-import { initialPayers, Payer } from "../../lib/paymentTracker"
-import { v4 as uuidv4 } from 'uuid';
-import { useRouter } from 'next/navigation';
+import { Payer } from "../../lib/paymentTracker";
+import { v4 as uuidv4 } from "uuid";
+import { useRouter } from "next/navigation";
 
 export default function PayerManagement() {
-  const [payers, setPayers] = useState<Payer[]>(initialPayers);
+  const [payers, setPayers] = useState<Payer[]>();
   const [payerName, setPayerName] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -36,7 +36,7 @@ export default function PayerManagement() {
   const handleAddPayer = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const newPayer = { id: uuidv4(), payerName: payerName, order: payers.length + 1 };
+    const newPayer = { id: uuidv4(), payerName: payerName, order: (payers?.length || 0) + 1 };
 
     try {
       const res = await fetch("/api/payers", {
@@ -48,8 +48,8 @@ export default function PayerManagement() {
       if (!res.ok) throw new Error("Failed to add payer");
 
       const addedPayer = await res.json();
-      console.log(addedPayer)
-      setPayers([...payers, addedPayer]); // Update local state with new payer
+      console.log(addedPayer);
+      setPayers([...(payers || []), addedPayer]); // Update local state with new payer
       setPayerName(""); // Reset input field
       // router.push('/?refresh=' + new Date().getTime());
     } catch (err) {
